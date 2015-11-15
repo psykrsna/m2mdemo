@@ -15,7 +15,30 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from demo.models import Software
+from rest_framework import routers, serializers, viewsets
 
+
+class SoftwareSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Software
+        fields = ('name', 'version')
+
+
+class SoftwareViewSet(viewsets.ModelViewSet):
+    queryset = Software.objects.all()
+    serializer_class = SoftwareSerializer
+
+
+router = routers.DefaultRouter()
+router.register(r'software', SoftwareViewSet)
+
+urlpatterns = [
+    url(r'^', include(router.urls))
+]
+
+'''
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
 ]
+'''
