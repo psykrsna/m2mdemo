@@ -29,7 +29,7 @@ class SoftwareSerializer(serializers.ModelSerializer):
     programmers = serializers.PrimaryKeyRelatedField(many=True, queryset=Programmer.objects.all())
     class Meta:
         model = Software
-        fields = ('name', 'version', 'programmers',)
+        fields = ('id', 'name', 'version', 'programmers',)
 
 
 class SoftwareViewSet(viewsets.ModelViewSet):
