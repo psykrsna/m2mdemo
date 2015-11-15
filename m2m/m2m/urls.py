@@ -15,14 +15,21 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from demo.models import Software
+from demo.models import Software, Programmer
 from rest_framework import routers, serializers, viewsets
 
 
-class SoftwareSerializer(serializers.HyperlinkedModelSerializer):
+class ProgrammerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Programmer
+        fields = ('username',)
+
+
+class SoftwareSerializer(serializers.ModelSerializer):
+    programmers = serializers.PrimaryKeyRelatedField(many=True, queryset=Programmer.objects.all())
     class Meta:
         model = Software
-        fields = ('name', 'version')
+        fields = ('name', 'version', 'programmers',)
 
 
 class SoftwareViewSet(viewsets.ModelViewSet):
@@ -30,8 +37,14 @@ class SoftwareViewSet(viewsets.ModelViewSet):
     serializer_class = SoftwareSerializer
 
 
+class ProgrammerViewSet(viewsets.ModelViewSet):
+    queryset = Programmer.objects.all()
+    serializer_class = ProgrammerSerializer
+
+
 router = routers.DefaultRouter()
 router.register(r'software', SoftwareViewSet)
+router.register(r'programmer', ProgrammerViewSet)
 
 urlpatterns = [
     url(r'^', include(router.urls))
